@@ -54,4 +54,47 @@ function handleDoneTask(e) {
 }
 
 
+//add task form
+document.addEventListener('submit', handleAddTask);
 
+function handleAddTask(e) {
+  e.preventDefault();
+  if (!e.target.id == 'task-form') {
+    return;
+  }
+  const textInput = e.target.title;
+
+  if (textInput.value.trim().length < 5 ) {
+    alert('Need fill at least 5 characters');
+    return;
+  }
+
+  const newTask = {
+    id: tasks.at(-1).id + 1,
+    title: textInput.value,
+    done: false
+  }
+  tasks.push(newTask);
+  generateTask(newTask);
+  textInput.value = '';
+
+}
+
+
+//delete task
+document.addEventListener('click', handleDeleteTask);
+
+function handleDeleteTask(e) {
+  if (!e.target.classList.contains('fa-trash')) {
+    return ;
+  }
+  if (!confirm('Are you sure ?')) {
+    return;
+  }
+  const parentLi = e.target.closest('li');
+  parentLi.parentNode.removeChild(parentLi);
+  const textValue = e.target.closest('li').firstElementChild.textContent;
+
+  let indexInTasks = tasks.findIndex(el => el.title === textValue);
+  tasks.splice(indexInTasks, 1);
+}
