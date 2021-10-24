@@ -150,7 +150,6 @@ document.addEventListener('change', handleFilterSelect);
 
 function handleFilterSelect(e) {
   const filterSelect = document.getElementById('filter-tasks');
-  const total = document.getElementById('tasks-total');
   e.preventDefault();
   if (e.target.id !== 'filter-tasks') {
     return;
@@ -174,4 +173,22 @@ function handleFilterSelect(e) {
       render(remainTask);
       break;
   }
+}
+
+//text filter
+
+document.addEventListener('keyup', handleFilterText);
+
+function handleFilterText(e) {
+  const filterText = document.getElementById('search-box');
+  e.preventDefault();
+  if (e.target.id !== 'search-box') {
+    return;
+  }
+  const textValue = filterText.value.trim().toLowerCase();
+
+  const filteredData = tasks.filter(function(task) {
+    return task.title.toLowerCase().indexOf(textValue) > -1;
+  });
+  render(filteredData);
 }
