@@ -51,6 +51,11 @@ function handleDoneTask(e) {
   e.target.classList.toggle('red');
   const listItem = e.target.closest('li');
   listItem.firstElementChild.classList.toggle('done');
+
+  //change ib obj
+  const textValue = e.target.closest('li').firstElementChild.textContent;
+  let indexInTasks = tasks.findIndex(el => el.title === textValue);
+  tasks[indexInTasks].done = !tasks[indexInTasks].done;
 }
 
 
