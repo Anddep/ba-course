@@ -1,26 +1,27 @@
 const tasks = [
-  // { id: 1, title: "Go to the cinema", done: false },
-  // { id: 2, title: "Go to the theatre", done: true },
-  // { id: 3, title: "Learn Java Script", done: false },
+  { id: 1, title: "Go to the cinema", done: false },
+  { id: 2, title: "Go to the theatre", done: true },
+  { id: 3, title: "Learn Java Script", done: false },
   { id: 4, title: "Finish HTML project", done: false },
 ];
-
-// console.log(tasks.at(-1).id);
 
 
 //display tasks form data
 const tasksBox = document.getElementById('tasks-box');
 
-const showAllTasks = new Promise((resolve, reject) => {
-  tasks.forEach((element) => {
-    generateTask(element);
+function render(tasks) {
+  tasksBox.innerHTML = '';
+  new Promise((resolve, reject) => {
+    tasks.forEach((element) => {
+      generateTask(element);
+    });
+    resolve();
+  }).then(() => {
+    updateCount();
   });
-  resolve();
-});
+}
 
-showAllTasks.then(() => {
-  updateCount();
-});
+render(tasks);
 
 
 function generateTask (task) {
@@ -99,8 +100,6 @@ function handleAddTask(e) {
   generateTask(newTask);
   textInput.value = '';
 
-  console.log(newTask);
-
   updateCount();
 }
 
@@ -124,7 +123,6 @@ function handleDeleteTask(e) {
   updateCount();
 }
 
-
 //Info block
 function updateCount () {
   const infoBlock = document.getElementById('tasks-info');
@@ -144,4 +142,36 @@ function updateCount () {
     return task.done === false;
   }).length;
 
+}
+
+//Select filter
+
+document.addEventListener('change', handleFilterSelect);
+
+function handleFilterSelect(e) {
+  const filterSelect = document.getElementById('filter-tasks');
+  const total = document.getElementById('tasks-total');
+  e.preventDefault();
+  if (e.target.id !== 'filter-tasks') {
+    return;
+  }
+  const selectedValue = parseInt(filterSelect.value)
+
+  switch (selectedValue) {
+    case 1:
+      render(tasks);
+      break;
+    case 2:
+      const doneTask =  tasks.filter((task) => {
+        return task.done === true;
+      });
+      render(doneTask);
+      break;
+    case 3:
+      const remainTask =  tasks.filter((task) => {
+        return task.done === false;
+      });
+      render(remainTask);
+      break;
+  }
 }
