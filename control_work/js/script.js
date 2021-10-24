@@ -1,7 +1,7 @@
 const tasks = [
-  { id: 1, title: "Go to the cinema", done: false },
-  { id: 2, title: "Go to the theatre", done: true },
-  { id: 3, title: "Learn Java Script", done: false },
+  // { id: 1, title: "Go to the cinema", done: false },
+  // { id: 2, title: "Go to the theatre", done: true },
+  // { id: 3, title: "Learn Java Script", done: false },
   { id: 4, title: "Finish HTML project", done: false },
 ];
 
@@ -10,9 +10,19 @@ const tasks = [
 
 //display tasks form data
 const tasksBox = document.getElementById('tasks-box');
-tasks.forEach((element) => {
-  generateTask(element);
+
+const showAllTasks = new Promise((resolve, reject) => {
+  tasks.forEach((element) => {
+    generateTask(element);
+  });
+  resolve();
 });
+
+showAllTasks.then(() => {
+  updateCount();
+});
+
+
 function generateTask (task) {
   const li = document.createElement('li');
   li.classList.add('list-group-item', 'd-flex');
@@ -56,6 +66,8 @@ function handleDoneTask(e) {
   const textValue = e.target.closest('li').firstElementChild.textContent;
   let indexInTasks = tasks.findIndex(el => el.title === textValue);
   tasks[indexInTasks].done = !tasks[indexInTasks].done;
+
+  updateCount();
 }
 
 
@@ -74,8 +86,12 @@ function handleAddTask(e) {
     return;
   }
 
+  let id = 1;
+  if (tasks.at(-1) !== undefined && tasks.at(-1).id) {
+    id = tasks.at(-1).id + 1
+  }
   const newTask = {
-    id: tasks.at(-1).id + 1,
+    id: id,
     title: textInput.value,
     done: false
   }
@@ -83,6 +99,9 @@ function handleAddTask(e) {
   generateTask(newTask);
   textInput.value = '';
 
+  console.log(newTask);
+
+  updateCount();
 }
 
 
@@ -102,4 +121,27 @@ function handleDeleteTask(e) {
 
   let indexInTasks = tasks.findIndex(el => el.title === textValue);
   tasks.splice(indexInTasks, 1);
+  updateCount();
+}
+
+
+//Info block
+function updateCount () {
+  const infoBlock = document.getElementById('tasks-info');
+  const total = document.getElementById('tasks-total');
+  const done = document.getElementById('tasks-done');
+  const remain = document.getElementById('tasks-remain');
+  if (tasks.length === 0) {
+    infoBlock.style.display = "none";
+  } else {
+    infoBlock.style.display = "block";
+  }
+  total.textContent = tasks.length;
+  done.textContent = tasks.filter((task) => {
+    return task.done === true;
+  }).length;
+  remain.textContent = tasks.filter((task) => {
+    return task.done === false;
+  }).length;
+
 }
